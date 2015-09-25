@@ -1,0 +1,13 @@
+{
+    "name": "jezzdk/wordpress-debug-bar",
+    "authors": [
+        {
+            "name": "Jess Johannessen",
+            "email": "jess.johannessen@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "maximebf/debugbar": "dev-master"
+    }
+}
