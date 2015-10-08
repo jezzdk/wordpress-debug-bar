@@ -14,11 +14,13 @@
 require_once 'vendor/autoload.php';
 require_once 'collectors/WPActionsCollector.php';
 require_once 'collectors/WPFiltersCollector.php';
+require_once 'collectors/WPDBCollector.php';
 
 use DebugBar\StandardDebugBar;
 
 class Wordpress_Debug_Bar {
 
+    protected static $instance;
     protected static $debugbar;
 
     public function __construct() {
@@ -26,11 +28,23 @@ class Wordpress_Debug_Bar {
         self::$debugbar->addCollector(new WPActionsCollector());
         self::$debugbar->addCollector(new WPFiltersCollector());
 
+        if ( defined('SAVEQUERIES') && SAVEQUERIES ) {
+            self::$debugbar->addCollector(new WPDBCollector());
+        }
+
         if ( defined('DOING_AJAX') && DOING_AJAX ) {
             add_action( 'admin_init', array( &$this, 'init_ajax' ) );
         }
 
         add_action( 'init', array( &$this, 'init' ) );
+    }
+
+    public static function get_instance() {
+        if ( ! self::$instance ) {
+            self::$instance = new self();
+        }
+
+        return self::$instance;
     }
 
     public function init() {
@@ -86,4 +100,4 @@ class Wordpress_Debug_Bar {
     }
 }
 
-$GLOBALS['wp_debug_bar'] = new Wordpress_Debug_Bar();
+$GLOBALS['wp_debug_bar'] = Wordpress_Debug_Bar::get_instance();
